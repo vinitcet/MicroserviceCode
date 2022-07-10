@@ -1,14 +1,14 @@
 server:
   port: 9002
 
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    hostname: localhost
+#eureka:
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    hostname: localhost
 
 
 spring:
@@ -22,7 +22,49 @@ spring:
       ddl-auto: update
   application:
     name: user-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:9296
+  zipkin:
+    base-url: http://127.0.0.1:9422/
 
 management:
   security:
     enabled: false
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+resilience4j:
+  circuitbreaker:
+    instances:
+      departmentService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 20
+        waitDurationInOpenState: 50s
+        automaticTransitionFromOpenToHalfOpenEnabled : true
+  retry:
+    instances:
+      departmentService:
+        registerHealthIndicator: true
+        maxRetryAttempts: 5
+        waitDuration: 10s
+  ratelimiter:
+    instances:
+      departmentService:
+        registerHealthIndicator: true
+        limitForPeriod: 10
+        limitRefreshPeriod: 10s
+        timeoutDuration: 3s

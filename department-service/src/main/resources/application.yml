@@ -13,6 +13,16 @@ eureka:
 management:
   security:
     enabled: false
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
 
 spring:
   datasource:
@@ -25,3 +35,5 @@ spring:
       ddl-auto: update
   application:
     name: department-service
+  zipkin:
+    base-url: http://127.0.0.1:9422/

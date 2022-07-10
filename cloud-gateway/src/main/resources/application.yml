@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: API-GATEWAY
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       routes:
@@ -12,9 +14,12 @@ spring:
         predicates:
         - Path=/user/**
       - id: DEPARTMENT-SERVICE
-        uri: lb://DEPARTMENTl-SERVICE
+        uri: lb://DEPARTMENT-SERVICE
         predicates:
         - Path=/department/**
+    config:
+      enabled: true
+      uri: http://localhost:9296
 
 eureka:
   client:
